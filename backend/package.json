@@ -1,0 +1,37 @@
+{
+    "name": "sociosphere-backend",
+    "version": "1.0.0",
+    "description": "Backend for SocioSphere platform",
+    "type": "module",
+    "main": "src/server.js",
+    "scripts": {
+        "start": "node src/server.js",
+        "dev": "nodemon src/server.js"
+    },
+    "author": "Aravind Mora",
+    "license": "ISC",
+    "dependencies": {
+        "@google/generative-ai": "^0.24.1",
+        "axios": "^1.13.5",
+        "bcrypt": "^6.0.0",
+        "bcryptjs": "^2.4.3",
+        "cloudinary": "^1.41.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.6.1",
+        "express": "^4.19.2",
+        "express-rate-limit": "^8.2.1",
+        "express-session": "^1.19.0",
+        "google-auth-library": "^10.5.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.5.0",
+        "multer": "^2.0.2",
+        "multer-storage-cloudinary": "^4.0.0",
+        "nodemailer": "^6.9.15",
+        "passport": "^0.7.0",
+        "passport-google-oauth20": "^2.0.0",
+        "socket.io": "^4.8.3"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.3"
+    }
+}
