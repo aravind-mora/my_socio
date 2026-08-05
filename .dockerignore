@@ -1,0 +1,12 @@
+# Keep the image lean + never ship secrets
+node_modules
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+npm-debug.log*
+*.md
+.gitkeep
+adminToken
+backend.txt
