@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-    origin: function (origin, callback) {
+    origin: function(origin, callback) {
         const allowed = [
             process.env.FRONTEND_URL,
             "http://localhost:5173",
@@ -72,9 +72,14 @@ app.use(cors({
 app.use(express.json());
 app.use(passport.initialize());
 
+// ===== RATE LIMITING =====
+// Relaxed in development; in production you can override via RATE_LIMIT_MAX
+// (100/15min default is too low for real usage — set e.g. 1000).
+const IS_DEV = process.env.NODE_ENV === "development";
+const RATE_MAX = Number(process.env.RATE_LIMIT_MAX) || (IS_DEV ? 5000 : 1000);
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: process.env.NODE_ENV === "development" ? 5000 : 100,
+    max: RATE_MAX,
     message: { error: "Too many requests, please try again later" }
 });
 
