@@ -3,8 +3,7 @@ import User from "../models/User.js";
 
 const auth = async (req, res, next) => {
     try {
-        // TEMP DEBUG (keep for now)
-        console.log("HEADERS RECEIVED:", req.headers);
+        // (debug header logging removed — it spammed the console on every request)
 
         const authHeader = req.headers.authorization;
 

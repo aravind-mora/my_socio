@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
         const allowed = [
             process.env.FRONTEND_URL,
             "http://localhost:5173",
@@ -74,7 +74,7 @@ app.use(passport.initialize());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: process.env.NODE_ENV === "development" ? 5000 : 100,
     message: { error: "Too many requests, please try again later" }
 });
 

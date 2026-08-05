@@ -1,8 +1,8 @@
 import Review from "../models/Review.js";
 import Service from "../models/Service.js";
+import User from "../models/User.js";
 import { sendNotification } from "../utils/notify.js";
 import ServiceRequest from "../models/ServiceRequest.js";
-
 
 export const createReview = async (req, res) => {
     try {
@@ -12,10 +12,11 @@ export const createReview = async (req, res) => {
             customer: req.user._id
         });
 
-        if (!serviceRequest || serviceRequest.status !== "PAID") {
-            return res.status(400).json({
-                error: "You can review only after payment"
-            });
+        if (
+            !serviceRequest ||
+            (serviceRequest.paymentStatus !== "PAID" && serviceRequest.status !== "PAID")
+        ) {
+            return res.status(400).json({ error: "You can review only after payment" });
         }
 
         const existingReview = await Review.findOne({

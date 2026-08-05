@@ -85,11 +85,7 @@ export const acceptRequest = async (req, res) => {
         const { requestId, bidId } = req.body;
 
         // Only CUSTOMER can accept
-        if (req.user.role !== "CUSTOMER") {
-            return res.status(403).json({
-                error: "Only customer can accept a bid"
-            });
-        }
+
 
         const serviceRequest = await ServiceRequest.findById(requestId);
 
@@ -182,7 +178,7 @@ export const requestRefund = async (req, res) => {
     if (request.customer.toString() !== req.user._id.toString())
         return res.status(403).json({ error: "Not authorized" });
 
-    if (request.status !== "PAID")
+    if (request.paymentStatus !== "PAID")
         return res.status(400).json({
             error: "Refund only allowed after payment"
         });
