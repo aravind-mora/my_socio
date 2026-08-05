@@ -1,0 +1,21 @@
+# Render blueprint — deploys the backend from the repo root
+# Repo: aravind-mora/my_socio  (backend code lives in ./backend)
+services:
+  - type: web
+    name: sociosphere-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: RATE_LIMIT_MAX
+        value: "1000"
+      # Set these in the Render dashboard (secret):
+      # FRONTEND_URL, BACKEND_URL, MONGO_URI, JWT_SECRET, JWT_EXPIRE,
+      # BREVO_API_KEY, SMTP_*, EMAIL_*, OTP_EMAIL, OTP_EXPIRY_MINUTES,
+      # ADMIN_SECRET, GEMINI_API_KEY, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+      # GOOGLE_CALLBACK_URL, CLOUDINARY_*
