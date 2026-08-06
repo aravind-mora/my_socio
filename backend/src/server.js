@@ -39,10 +39,21 @@ const app = express();
 app.set('trust proxy', 1); // Required for Render/Heroku reverse proxy - fixes https redirect_uri_mismatch
 const server = http.createServer(app);
 
+// ===== ALLOWED ORIGINS =====
+// Web (Vercel) + Capacitor Android app (WebView uses https://localhost)
+const ALLOWED_ORIGINS = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://localhost",
+    "http://localhost",
+    "capacitor://localhost",
+].filter(Boolean);
+
 // ===== SOCKET.IO =====
 const io = new Server(server, {
     cors: {
-        origin: process.env.FRONTEND_URL || "http://localhost:5173",
+        origin: ALLOWED_ORIGINS,
         methods: ["GET", "POST"]
     }
 });
@@ -55,13 +66,8 @@ app.use((req, res, next) => {
 
 app.use(cors({
     origin: function(origin, callback) {
-        const allowed = [
-            process.env.FRONTEND_URL,
-            "http://localhost:5173",
-            "http://localhost:3000"
-        ].filter(Boolean);
         // Allow requests with no origin (mobile apps, Postman, server-to-server)
-        if (!origin || allowed.includes(origin)) {
+        if (!origin || ALLOWED_ORIGINS.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error("Not allowed by CORS"));
