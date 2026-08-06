@@ -83,9 +83,9 @@ function Shell() {
   return (
     <>
       <ScrollToTop />
-      {/* rotating 3D sphere — transparent website background */}
+      {/* rotating 3D sphere — transparent website background (behind all UI) */}
       <div className="website-sphere-bg">
-        <OrbitalSphere size={340} opacity={0.4} />
+        <OrbitalSphere size={440} opacity={0.55} />
       </div>
       <div className="site-content-wrap">
         <div className="bg-blobs"><div className="blob b1" /><div className="blob b2" /><div className="blob b3" /></div>
