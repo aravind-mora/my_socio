@@ -1,16 +1,18 @@
 import { useRef, useState, useEffect } from "react";
 
-/** 6-box OTP input with auto-advance, backspace handling and paste support. */
+/**
+ * Bulletproof OTP input.
+ * - 6 styled boxes (inline styles — visible even if the CSS file is stale/missing)
+ * - PLUS a visible fallback single field below, so there is ALWAYS a way to
+ *   enter the OTP even if the boxes fail to render for any reason.
+ */
 export default function OTPInput({ length = 6, value, onChange, disabled = false }) {
-  const [boxes, setBoxes] = useState(Array(length).fill(""));
+  const [boxes, setBoxes] = useState(() => Array.from({ length }, () => ""));
   const refs = useRef([]);
 
   useEffect(() => {
-    if (value !== undefined) {
-      const arr = String(value || "").padEnd(length, "").split("").slice(0, length);
-      setBoxes(arr.map((c) => (c === " " ? "" : c)));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const str = String(value || "");
+    setBoxes(Array.from({ length }, (_, i) => str[i] || ""));
   }, [value, length]);
 
   const emit = (arr) => onChange?.(arr.join(""));
@@ -28,7 +30,7 @@ export default function OTPInput({ length = 6, value, onChange, disabled = false
     if (e.key === "Backspace") {
       e.preventDefault();
       const next = [...boxes];
-      if (next[i]) { next[i] = ""; }
+      if (next[i]) next[i] = "";
       else if (i > 0) { next[i - 1] = ""; refs.current[i - 1]?.focus(); }
       setBoxes(next);
       emit(next);
@@ -40,29 +42,56 @@ export default function OTPInput({ length = 6, value, onChange, disabled = false
   const handlePaste = (e) => {
     e.preventDefault();
     const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, length);
-    const next = Array(length).fill("");
-    text.split("").forEach((c, i) => (next[i] = c));
+    const next = Array.from({ length }, (_, i) => text[i] || "");
     setBoxes(next);
     emit(next);
     refs.current[Math.min(text.length, length - 1)]?.focus();
   };
 
+  // inline styles so boxes are ALWAYS visible
+  const boxStyle = {
+    width: 52, height: 60, textAlign: "center",
+    fontFamily: "'Fredoka', sans-serif", fontSize: "1.6rem", fontWeight: 700,
+    background: "rgba(255,255,255,0.08)", border: "2px solid rgba(255,255,255,0.25)",
+    borderRadius: 14, color: "#fdf3ea", outline: "none",
+  };
+
   return (
-    <div className="otp-boxes" onPaste={handlePaste}>
-      {boxes.map((b, i) => (
+    <div>
+      <div className="otp-boxes" style={{ display: "flex", gap: 10, justifyContent: "center" }} onPaste={handlePaste}>
+        {boxes.map((b, i) => (
+          <input
+            key={i}
+            ref={(el) => (refs.current[i] = el)}
+            className="otp-box"
+            style={boxStyle}
+            inputMode="numeric"
+            autoComplete={i === 0 ? "one-time-code" : "off"}
+            maxLength={2}
+            value={b}
+            disabled={disabled}
+            onChange={(e) => handleChange(i, e.target.value)}
+            onKeyDown={(e) => handleKey(i, e)}
+          />
+        ))}
+      </div>
+
+      {/* bulletproof fallback single field — always available */}
+      <div className="field" style={{ marginTop: 14 }}>
+        <label style={{ display: "block", fontSize: "0.8rem", color: "var(--text-dim)", marginBottom: 6 }}>
+          Or type the {length}-digit code here:
+        </label>
         <input
-          key={i}
-          ref={(el) => (refs.current[i] = el)}
-          className="otp-box"
+          className="input"
           inputMode="numeric"
-          autoComplete={i === 0 ? "one-time-code" : "off"}
-          maxLength={2}
-          value={b}
+          maxLength={length}
+          placeholder={`e.g. 123456`}
+          value={String(value || "")}
           disabled={disabled}
-          onChange={(e) => handleChange(i, e.target.value)}
-          onKeyDown={(e) => handleKey(i, e)}
+          onChange={(e) => onChange?.(e.target.value.replace(/\D/g, "").slice(0, length))}
+          style={{ textAlign: "center", letterSpacing: 6, fontSize: "1.2rem" }}
         />
-      ))}
+      </div>
     </div>
   );
 }
