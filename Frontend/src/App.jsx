@@ -6,7 +6,7 @@ import { setToken } from "./api/client";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ChatWidget from "./components/ChatWidget";
-import OrbitalSphere from "./components/OrbitalSphere";
+import LogoGlobe from "./components/LogoGlobe";
 import { FullScreenLoader } from "./components/Misc";
 
 import Launch from "./pages/Launch";
@@ -83,9 +83,9 @@ function Shell() {
   return (
     <>
       <ScrollToTop />
-      {/* rotating 3D sphere — transparent website background (behind all UI) */}
+      {/* rotating 3D globe — logo image wrapped & rotating (behind all UI) */}
       <div className="website-sphere-bg">
-        <OrbitalSphere size={440} opacity={0.55} />
+        <LogoGlobe size={420} opacity={0.9} />
       </div>
       <div className="site-content-wrap">
         <div className="bg-blobs"><div className="blob b1" /><div className="blob b2" /><div className="blob b3" /></div>
