@@ -695,7 +695,7 @@ select.input option { background: var(--ink-2); color: var(--text); }
   z-index: -1;
 }
 
-/* fixed background globe — fills the desktop viewport below the header */
+/* fixed background globe — fills the ENTIRE desktop viewport below the header */
 .website-sphere-bg {
   position: fixed;
   top: 70px; /* below the navbar/header */
@@ -706,11 +706,12 @@ select.input option { background: var(--ink-2); color: var(--text); }
   pointer-events: none;
   overflow: hidden;
 }
+/* 100vmax = the LARGER of viewport width/height → the globe is always at
+   least as big as the screen in both dimensions, so it fills the full
+   width AND height (cropped at edges by overflow:hidden). */
 .website-sphere-bg .logo-globe {
-  width: min(96vw, 96vh) !important;
-  height: min(96vw, 96vh) !important;
-  max-width: 1400px;
-  max-height: 1400px;
+  width: 100vmax !important;
+  height: 100vmax !important;
 }
 .logo-globe canvas { display: block; width: 100% !important; height: 100% !important; }
 .site-content-wrap { position: relative; }
