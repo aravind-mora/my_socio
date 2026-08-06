@@ -5,9 +5,12 @@ import * as THREE from "three";
  * LogoGlobe — wraps the SocioSphere logo image around a 3D sphere
  * and rotates it like a globe in movies (WebGL / Three.js).
  *
- * - The logo texture is mapped onto the sphere (equirectangular-ish wrap).
+ * - The logo texture is mapped onto the sphere (equirectangular wrap).
  * - Sphere rotates slowly on Y axis 24/7 + a subtle tilt.
  * - Transparent background (alpha canvas) so it sits behind the UI.
+ *
+ * Transparency: pass `opacity` (0 = invisible, 1 = solid).
+ * Size: pass `size` (px) OR style it via CSS — canvas auto-fills its container.
  */
 export default function LogoGlobe({ size = 380, opacity = 1, className = "" }) {
   const mountRef = useRef(null);
@@ -18,7 +21,6 @@ export default function LogoGlobe({ size = 380, opacity = 1, className = "" }) {
 
     // renderer with alpha (transparent bg)
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(size, size);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
 
@@ -39,7 +41,7 @@ export default function LogoGlobe({ size = 380, opacity = 1, className = "" }) {
     const material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85, // globe texture opacity (change here for texture transparency)
     });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.rotation.x = -0.15; // subtle tilt like the logo
@@ -56,6 +58,17 @@ export default function LogoGlobe({ size = 380, opacity = 1, className = "" }) {
     const glow = new THREE.Mesh(glowGeo, glowMat);
     scene.add(glow);
 
+    // resize the renderer to fill its container (responsive)
+    const resize = () => {
+      const w = mount.clientWidth || size;
+      const h = mount.clientHeight || size;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
     // animate — rotate Y like a globe, 24/7
     let raf;
     const animate = () => {
@@ -68,6 +81,7 @@ export default function LogoGlobe({ size = 380, opacity = 1, className = "" }) {
 
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
       renderer.dispose();
       geometry.dispose();
       material.dispose();
