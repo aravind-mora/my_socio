@@ -83,9 +83,9 @@ function Shell() {
   return (
     <>
       <ScrollToTop />
-      {/* rotating 3D globe — logo image wrapped & rotating (behind all UI) */}
+      {/* rotating 3D globe — fills the desktop viewport behind the UI */}
       <div className="website-sphere-bg">
-        <LogoGlobe size={520} opacity={0.6} />
+        <LogoGlobe size={900} opacity={0.55} />
       </div>
       <div className="site-content-wrap">
         <div className="bg-blobs"><div className="blob b1" /><div className="blob b2" /><div className="blob b3" /></div>
