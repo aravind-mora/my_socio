@@ -27,19 +27,19 @@ export default function LogoGlobe({ size = 380, opacity = 1, className = "" }) {
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.set(0, 0, 3.2);
 
-    // texture from the logo image — repeat so it wraps FULLY around the globe
+    // texture from the equirectangular (2:1) image — wraps the FULL globe cleanly
     const loader = new THREE.TextureLoader();
-    const texture = loader.load("/logo-sphere.png");
+    const texture = loader.load("/logo-equirect.png");
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.repeat.set(1.6, 1.3); // tile horizontally+vertically to cover the whole sphere
+    texture.repeat.set(1, 1); // 2:1 map → full coverage, no tiling needed
     texture.anisotropy = 4;
 
     const geometry = new THREE.SphereGeometry(1.6, 64, 64);
     const material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.8,
     });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.rotation.x = -0.15; // subtle tilt like the logo
