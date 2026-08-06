@@ -695,13 +695,14 @@ select.input option { background: var(--ink-2); color: var(--text); }
   z-index: -1;
 }
 
-/* fixed background placement behind everything on the website */
+/* fixed background sphere — sits BEHIND all UI, ABOVE the dark bg */
 .website-sphere-bg {
   position: fixed;
-  top: 40%;
-  right: -70px;
-  transform: translateY(-50%);
-  z-index: 0;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: -1; /* below content, above the -2 blobs background */
   pointer-events: none;
+  opacity: 1;
 }
-.site-content-wrap { position: relative; z-index: 1; }
+.site-content-wrap { position: relative; }
