@@ -695,14 +695,22 @@ select.input option { background: var(--ink-2); color: var(--text); }
   z-index: -1;
 }
 
-/* fixed background sphere — sits BEHIND all UI, ABOVE the dark bg */
+/* fixed background globe — fills the desktop viewport below the header */
 .website-sphere-bg {
   position: fixed;
-  inset: 0;
+  top: 70px; /* below the navbar/header */
+  left: 0; right: 0; bottom: 0;
   display: grid;
   place-items: center;
   z-index: -1; /* below content, above the -2 blobs background */
   pointer-events: none;
+  overflow: hidden;
 }
-.logo-globe canvas { display: block; }
+.website-sphere-bg .logo-globe {
+  width: min(96vw, 96vh) !important;
+  height: min(96vw, 96vh) !important;
+  max-width: 1400px;
+  max-height: 1400px;
+}
+.logo-globe canvas { display: block; width: 100% !important; height: 100% !important; }
 .site-content-wrap { position: relative; }
