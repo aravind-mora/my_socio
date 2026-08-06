@@ -6,6 +6,7 @@ import { setToken } from "./api/client";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ChatWidget from "./components/ChatWidget";
+import OrbitalSphere from "./components/OrbitalSphere";
 import { FullScreenLoader } from "./components/Misc";
 
 import Launch from "./pages/Launch";
@@ -82,12 +83,18 @@ function Shell() {
   return (
     <>
       <ScrollToTop />
-      <div className="bg-blobs"><div className="blob b1" /><div className="blob b2" /><div className="blob b3" /></div>
-      <Navbar />
-      <main>
-        <Outlet />
-      </main>
-      <Footer />
+      {/* rotating 3D sphere — transparent website background */}
+      <div className="website-sphere-bg">
+        <OrbitalSphere size={340} opacity={0.4} />
+      </div>
+      <div className="site-content-wrap">
+        <div className="bg-blobs"><div className="blob b1" /><div className="blob b2" /><div className="blob b3" /></div>
+        <Navbar />
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
       <ChatWidget />
     </>
   );
