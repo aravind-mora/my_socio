@@ -703,6 +703,6 @@ select.input option { background: var(--ink-2); color: var(--text); }
   place-items: center;
   z-index: -1; /* below content, above the -2 blobs background */
   pointer-events: none;
-  opacity: 1;
 }
+.logo-globe canvas { display: block; }
 .site-content-wrap { position: relative; }
