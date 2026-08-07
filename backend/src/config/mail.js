@@ -39,9 +39,16 @@ export const sendOTPEmail = async (to, otp) => {
 };
 
 export const sendResetPasswordEmail = async (email, resetLink) => {
+    // build an Android app deep link from the token in the web link
+    const token = (String(resetLink).split("reset-password/")[1] || "").split("?")[0];
+    const appLink = token ? `com.sociosphere.neon://reset-password/${token}` : null;
     await sendEmail(email, "Reset Your Password - SocioSphere", `
         <h3>Password Reset Request</h3>
-        <p>Click the link below to reset your password:</p>
+        ${appLink ? `
+        <p>Open in the <strong>SocioSphere app</strong>:</p>
+        <a href="${appLink}" style="display:inline-block;background:#00e676;color:#04140b;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold;margin:6px 0;">Reset in App</a>
+        <br/>` : ""}
+        <p>Or click the link below in your browser:</p>
         <a href="${resetLink}">${resetLink}</a>
         <p>This link expires in 15 minutes.</p>
     `);
