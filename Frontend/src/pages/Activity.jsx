@@ -48,8 +48,8 @@ export default function Activity() {
   const [review, setReview] = useState({ rating: 5, comment: "" });
   const [reviewBusy, setReviewBusy] = useState(false);
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (quiet = false) => {
+    if (!quiet) setLoading(true);
     setPlacedBids(readPlacedBids());
     try {
       // Everyone can be a customer (request + accept bids); providers ALSO
@@ -84,6 +84,20 @@ export default function Activity() {
   }, [isProvider, user, toast]);
 
   useEffect(() => { load(); }, [load]);
+
+  // LIVE auto-refresh: silent poll every 8s + refresh on focus (no page reload)
+  useEffect(() => {
+    const t = setInterval(() => load(true), 8000);
+    const onVis = () => { if (!document.hidden) load(true); };
+    const onFocus = () => load(true);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      clearInterval(t);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [load]);
 
   const myId = user?.id || user?._id;
 
