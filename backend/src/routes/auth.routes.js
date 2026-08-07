@@ -1,7 +1,7 @@
 import express from "express";
-import { googleCallback } from "../controllers/auth.controller.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import passport from "passport";
 
 import {
     sendOTP,
@@ -9,30 +9,31 @@ import {
     signup,
     login,
     verifyLoginOTP,
-    upgradeToProvider,
-    googleLogin   // ✅ added
+    upgradeToProvider
 } from "../controllers/auth.controller.js";
 
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
+/* ============ EMAIL OTP FLOW (website + app) ============ */
 router.post("/send-otp", sendOTP);
 router.post("/verify-otp", verifyOTP);
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/login/verify-otp", verifyLoginOTP);
 
-import passport from "passport";
-
+/* ============ GOOGLE OAUTH ============
+   state=app  → Android app user → redirect back into the APP (deep link)
+   no state   → website user     → redirect to website
+========================================= */
 router.get(
     "/google",
     (req, res, next) => {
-        // pass through state (e.g. "app") so the callback knows where to redirect
         passport.authenticate("google", {
             scope: ["profile", "email"],
             session: false,
-            state: req.query.state || undefined,
+            state: req.query.state || undefined, // pass through state (e.g. "app")
         })(req, res, next);
     }
 );
@@ -51,10 +52,12 @@ router.get(
                 process.env.JWT_SECRET,
                 { expiresIn: "1d" }
             );
+
             // App users get redirected back into the app via deep link
             if (isApp) {
                 return res.redirect(`${APP_SCHEME}://login-success?token=${token}`);
             }
+            // Website users → website hash route
             return res.redirect(`${FRONTEND}/#/login-success?token=${token}`);
         } catch (err) {
             if (req.query.state === "app") {
@@ -65,15 +68,13 @@ router.get(
     }
 );
 
-
-
+/* ============ ROLE UPGRADE ============ */
 router.post("/upgrade-provider", auth, upgradeToProvider);
-
-export default router;
 
 /* ==========================================================
    DEMO / COMPANY ACCESS — one-click login without OTP
    (only works for the configured demo account)
+   Used by the "View Live Demo" button on the landing page.
 ========================================================== */
 router.post("/demo-login", async (req, res) => {
     try {
@@ -106,3 +107,5 @@ router.post("/demo-login", async (req, res) => {
         return res.status(500).json({ error: "Demo login failed" });
     }
 });
+
+export default router;
