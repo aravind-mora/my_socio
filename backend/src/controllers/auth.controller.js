@@ -1,5 +1,4 @@
 import express from "express";
-import { googleCallback } from "../controllers/auth.controller.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import passport from "passport";
@@ -10,8 +9,7 @@ import {
     signup,
     login,
     verifyLoginOTP,
-    upgradeToProvider,
-    googleLogin
+    upgradeToProvider
 } from "../controllers/auth.controller.js";
 
 import auth from "../middleware/auth.js";
